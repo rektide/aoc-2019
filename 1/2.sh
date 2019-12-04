@@ -1,3 +1,4 @@
 #!/bin/sh
-payload="$(./1.sh 2>/dev/null)"
+payload="$1"
+[ -z "$payload" ] && payload="$(./1.sh 2>/dev/null)"
 node fuel-calc.js $payload
