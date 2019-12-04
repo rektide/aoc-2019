@@ -29,11 +29,9 @@ Intcode.prototype.step= function(){
 	}else if( op=== 2){
 		res= l* r
 	}else if( op=== 99){
-		console.log( m.join("\n"))
-		process.exit( 0)
+		return 1
 	}else{
-		console.error( "unknown intcode, system halt")
-		process.exit( 1)
+		throw new Error( "unknown intcode, system halt")
 	}
 
 	if( this.v){
@@ -45,8 +43,14 @@ Intcode.prototype.step= function(){
 	++this.icount
 }
 Intcode.prototype.run= function(){
-	while( true){
-		this.step()
+	try{
+		let rc
+		do{
+			rc= this.step()
+		}while( !rc)
+	}catch(ex){
+		console.error( ex.message)
+		process.exit( 1)
 	}
 }
 
@@ -57,4 +61,5 @@ if( `file://${process.argv[1]}`=== import.meta.url){
 		v: process.env.V? parseInt( process.env.V): 0
 	})
 	c.run()
+	console.log( c.mem.join(","))
 }
