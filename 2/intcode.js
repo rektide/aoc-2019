@@ -44,7 +44,9 @@ Intcode.prototype.run= function(){
 	}
 }
 
-if( typeof( require)!== "undefined"&& require.main=== module){
+export default Intcode
+
+if( `file://${process.argv[1]}`=== import.meta.url){
 	let c= new Intcode()
 	c.run()
 }
