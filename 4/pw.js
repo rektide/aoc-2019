@@ -9,17 +9,15 @@ console.log({ min, max})
 function check( n){
 	const str= new String( n)
 	let
-	  prev,
+	  prev= str[ str.length -1],
 	  hasDouble= false
-	for( let i= str.length; i>= 0; --i){
+	for( let i= str.length- 2; i>= 0; --i){
 		let cur= str[ i]
-		if( prev){
-			if( prev< cur){
-				return false
-			}
-			if( prev=== cur){
-				hasDouble= true
-			}
+		if( prev< cur){
+			return false
+		}
+		if( prev=== cur){
+			hasDouble= true
 		}
 		prev= cur
 	} 
