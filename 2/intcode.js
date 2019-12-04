@@ -1,16 +1,16 @@
-#!/usr/bin/env node
-
 function parseMem( argv= process.argv){
 	argv= argv.slice( 2)
 	return argv.map( n=> parseInt( n))
 }
 
-function Intcode( mem= parseMem()){
+function Intcode( o){
 	if( !(this instanceof Intcode)){
 		return new Intcode( mem)
 	}
 	this.ip= 0
-	this.mem= mem
+	this.icount= 0
+	this.mem= parseMem()
+	Object.assign( this, o)
 	return this
 }
 Intcode.prototype.step= function(){
@@ -22,9 +22,8 @@ Intcode.prototype.step= function(){
 	  l= m[ lPos],
 	  rPos= m[ ip+ 2],
 	  r= m[ rPos],
-	  dest= m[ ip+ 3],
+	  destPos= m[ ip+ 3],
 	  res
-	this.ip+= 4
 	if( op=== 1){
 		res= l+ r
 	}else if( op=== 2){
@@ -36,7 +35,14 @@ Intcode.prototype.step= function(){
 		console.error( "unknown intcode, system halt")
 		process.exit( 1)
 	}
-	m[ dest]= res
+
+	if( this.v){
+		console.error(`${this.icount}: ${res}=${lPos}:${op}:${rPos} -> ${destPos}`)
+	}
+
+	m[ destPos]= res
+	this.ip+= 4
+	++this.icount
 }
 Intcode.prototype.run= function(){
 	while( true){
@@ -47,6 +53,8 @@ Intcode.prototype.run= function(){
 export default Intcode
 
 if( `file://${process.argv[1]}`=== import.meta.url){
-	let c= new Intcode()
+	let c= new Intcode({
+		v: process.env.V? parseInt( process.env.V): 0
+	})
 	c.run()
 }
