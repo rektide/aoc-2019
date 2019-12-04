@@ -2,7 +2,7 @@
 const codes= process.argv.slice( 2).map( n=> parseInt( n))
 let pos= 0
 
-console.log(codes)
+//console.log(codes.join(","))
 
 function step(){
 	let

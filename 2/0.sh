@@ -1,2 +1,2 @@
 #!/bin/sh
-cat ${1:-input} | xargs node 1.js
+cat ${1:-input} | tr ',' '\n' | xargs node intcode.js
