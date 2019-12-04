@@ -67,16 +67,14 @@ export function mapWire( wire, area= [], cb, n= 1){
 		}
 		console.error({ x, y, seg: seg.text})
 	}
+	return area
 }
 
-export function intersect(){
+export function main(){
 	const
-	  w1= parseWire( process.argv[ 2])
-	  w2= parseWire( process.argv[ 3])
-
-
+	  w1= parseWire( process.argv[ 2]),
+	  w2= parseWire( process.argv[ 3]),
+	  area= mapWire( w1)
 }
-
-let area= []
-mapWire( w1, area)
+main()
 
