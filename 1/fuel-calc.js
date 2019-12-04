@@ -3,7 +3,7 @@ const payload= parseFloat( process.argv[ 2])
 console.error( payload)
 
 let
-  agg= payload,
+  agg= 0,
   prev,
   step= payload
 while( agg!== prev){
