@@ -19,53 +19,47 @@ export function parseWire( wire){
 		})
 }
 
-export function mapWire( wire, area= [], n= 1, cb){
+export function mapWire( wire, area= {}, n= 1, cb){
 	let
 	  x= 0,
-	  y= 0
-	function assert( x, y){
+	  y= 0,
+	  l= 0
+	function assert( x, y, len){
 		if( !area[ x]){
-			area[ x]= []
+			area[ x]= {}
 		}
 		const had= area[ x][ y]
 		if( had){
-			if( had.indexOf( n)!== -1){
+			if( had.filter( h=> h.n=== n).length){
 				// already seen this wire here
 				return
 			}
-			cb&& cb({ x, y, had, area})
-			had.push( n)
+			cb&& cb({ x, y, len, had, area})
+			had.push({ n, len})
 		}else{
-			area[ x][ y]= [ n]
+			area[ x][ y]= [{ n, len}]
 		}
 	}
 	let start, end
 	for( let seg of wire){
-		if( seg.horizontal){
-			start= x
-			end= x+ seg.absolute
+		let
+		  h= seg.horizontal,
+		  end= h? x+ seg.absolute: y+ seg.absolute
+		if( seg.positive){
+			for( let i= h? x: y; i< end; ++i){
+				assert( h? i: x, h? y: i, l++)
+			}
 		}else{
-			start= y
-			end= y+ seg.absolute
-		}
-		if( !seg.positive){
-			let tmp= start
-			start= end
-			end= tmp
-		}
-		for( let i= start; i< end; ++i){
-			if( seg.horizontal){
-				assert( i, y)
-			}else{
-				assert( x, i)
+			for( let i= h? x: y; i> end; --i){
+				assert( h? i: x, h? y: i, l++)
 			}
 		}
-		if( seg.horizontal){
+		if( h){
 			x+= seg.absolute
 		}else{
 			y+= seg.absolute
 		}
-		console.error({ x, y, seg: seg.text})
+		//console.error({ x, y, seg: seg.text})
 	}
 	return area
 }
@@ -89,11 +83,13 @@ export function main(){
 			d= dB
 			x= xB
 			y= yB
-			console.error({ x: xB, y: yB, dB, best: true}) // errlog intersection
+			console.error({ dB, x: xB, y: yB, best: true}) // errlog intersection
 		}else{
-			console.error({ x: xB, y: yB, dB}) // errlog intersection
+			console.error({ dB, x: xB, y: yB}) // errlog intersection
 		}
 	})
 	console.log({ d, x, y})
 }
-main()
+if( `file://${process.argv[ 1]}`=== import.meta.url){
+	main()
+}
